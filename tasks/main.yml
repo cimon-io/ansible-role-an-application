@@ -1,0 +1,117 @@
+- name: get the current time for a timestamp
+  shell: 'echo $(date +%Y%m%d-%H%M%S)'
+  register: timestamp
+  tags:
+    - deploy
+    - application
+
+- name: Create application releases directory
+  file:
+    path: '/var/www/{{ application_name }}/{{ item }}'
+    state: directory
+    owner: '{{ deploy_user }}'
+    group: '{{ deploy_group }}'
+    mode: 0755
+  with_items:
+     - releases
+  tags:
+    - application
+
+- name: send key to remote deploy user
+  copy:
+    src: "files/deploy_keys/{{ deploy_key_name }}"
+    dest: /var/www/{{ application_name }}/shared/.ssh_deploy_key
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_group }}"
+    mode: 0600
+  tags:
+    - application
+
+- name: Create additional shared directories
+  file:
+    path: '/var/www/{{ application_name }}/shared/{{ item.src }}'
+    state: directory
+    owner: '{{ deploy_user }}'
+    group: '{{ deploy_group }}'
+    mode: 0755
+  when: item.dir is defined
+  with_items: '{{ shared }}'
+  tags:
+    - application
+
+- name: Clonning project repo
+  git:
+    repo: "{{ project_repo }}"
+    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}'
+    accept_hostkey: true
+    key_file: '/var/www/{{ application_name }}/shared/.ssh_deploy_key'
+    version: "{{ release_version }}"
+  become: yes
+  become_user: "{{ deploy_user }}"
+  tags:
+    - deploy
+    - application
+
+- name: Link shared resources to the application
+  file:
+    src: '/var/www/{{ application_name }}/shared/{{ item.src }}'
+    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/{{ item.dest }}'
+    state: link
+    force: yes
+  notify: restart application
+  become: yes
+  become_user: "{{ deploy_user }}"
+  with_items: '{{ shared }}'
+  when: shared is defined
+  tags:
+    - deploy
+    - application
+
+- name: Link .env to the application
+  file:
+    src: '/var/www/{{ application_name }}/shared/.env'
+    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/.env'
+    state: link
+    force: yes
+  notify: restart application
+  become: yes
+  become_user: "{{ deploy_user }}"
+  tags:
+    - deploy
+    - application
+
+- name: Create version file
+  template:
+    src: version.j2
+    dest: "/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
+  become: yes
+  become_user: "{{ deploy_user }}"
+  tags:
+    - deploy
+    - application
+
+- name: Prepare the application
+  shell: 'bash -lc "{{ item }}"'
+  args:
+    chdir: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}'
+  notify: restart application
+  become: yes
+  become_user: "{{ deploy_user }}"
+  with_items: '{{ prepare }}'
+  when: prepare is defined
+  tags:
+    - deploy
+    - application
+
+- name: Link deployed application to current directory
+  file:
+    src: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}'
+    dest: '/var/www/{{ application_name }}/current'
+    state: link
+    force: yes
+  notify: restart application
+  become: yes
+  become_user: "{{ deploy_user }}"
+  tags:
+    - deploy
+    - application

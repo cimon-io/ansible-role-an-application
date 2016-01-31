@@ -1,0 +1,6 @@
+---
+deploy_user: deploy
+deploy_group: deploy
+application_name: default
+deploy_key_name: rsa_key
+shared: []

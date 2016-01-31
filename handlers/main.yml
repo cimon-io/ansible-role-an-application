@@ -1,0 +1,8 @@
+- name: restart application
+  service:
+    name: "{{ application_name }}-{{ item.name }}"
+    enabled: yes
+    state: restarted
+  with_items: '{{ processes }}'
+  when: processes is defined
+
