@@ -32,3 +32,8 @@ Example Playbook
         - nodejs
 
 It creates `/var/www/any` folder with `releases`, `shared` folders and `current` symlink. Also it created upstart scripts for each process with name `any-pubsub` and `any-server`. Each upstart script will contain environment definitions.
+
+License
+-------
+
+MIT

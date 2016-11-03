@@ -1,0 +1,19 @@
+---
+- name: Create application directory
+  file:
+    path: '/var/www/{{ application_name }}/{{ item }}/{{ timestamp.stdout }}'
+    state: directory
+    owner: '{{ deploy_user }}'
+    group: '{{ deploy_group }}'
+    mode: 0755
+  with_items:
+     - releases
+
+- name: Get project archive
+  get_url:
+    url: "{{ project_url }}"
+    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/'
+    url_username: "{{ url_username }}"
+    url_password: "{{ url_password }}"
+  become: yes
+  become_user: "{{ deploy_user }}"

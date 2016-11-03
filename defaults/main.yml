@@ -1,6 +1,17 @@
 ---
 deploy_user: deploy
 deploy_group: deploy
+
 application_name: default
+
+project_repo: ''
 deploy_key_name: rsa_key
+
+project_url: ''
+url_username: ''
+url_password: ''
+
 shared: []
+prepare: []
+
+maintenance: false

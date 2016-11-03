@@ -1,0 +1,25 @@
+---
+- name: send key to remote deploy user
+  copy:
+    src: "files/deploy_keys/{{ deploy_key_name }}"
+    dest: /var/www/{{ application_name }}/shared/.ssh_deploy_key
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_group }}"
+    mode: 0600
+
+- name: Clonning project repo
+  git:
+    repo: "{{ project_repo }}"
+    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}'
+    accept_hostkey: true
+    key_file: '/var/www/{{ application_name }}/shared/.ssh_deploy_key'
+    version: "{{ release_version }}"
+  become: yes
+  become_user: "{{ deploy_user }}"
+
+- name: Create version file
+  template:
+    src: version.j2
+    dest: "/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
+  become: yes
+  become_user: "{{ deploy_user }}"

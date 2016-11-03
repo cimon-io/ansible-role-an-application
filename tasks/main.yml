@@ -1,3 +1,12 @@
+---
+- name: check proccesses
+  when: processes is undefined
+  set_fact:
+    processes: []
+  tags:
+    - deploy
+    - application
+
 - name: get the current time for a timestamp
   shell: 'echo $(date +%Y%m%d-%H%M%S)'
   register: timestamp
@@ -17,16 +26,6 @@
   tags:
     - application
 
-- name: send key to remote deploy user
-  copy:
-    src: "files/deploy_keys/{{ deploy_key_name }}"
-    dest: /var/www/{{ application_name }}/shared/.ssh_deploy_key
-    owner: "{{ deploy_user }}"
-    group: "{{ deploy_group }}"
-    mode: 0600
-  tags:
-    - application
-
 - name: Create additional shared directories
   file:
     path: '/var/www/{{ application_name }}/shared/{{ item.src }}'
@@ -37,17 +36,17 @@
   when: item.dir is defined
   with_items: '{{ shared }}'
   tags:
+    - deploy
     - application
 
-- name: Clonning project repo
-  git:
-    repo: "{{ project_repo }}"
-    dest: '/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}'
-    accept_hostkey: true
-    key_file: '/var/www/{{ application_name }}/shared/.ssh_deploy_key'
-    version: "{{ release_version }}"
-  become: yes
-  become_user: "{{ deploy_user }}"
+- include: tasks/from_repo.yml
+  when: project_repo|length>0
+  tags:
+    - deploy
+    - application
+
+- include: tasks/from_url.yml
+  when: project_url|length>0
   tags:
     - deploy
     - application
@@ -80,15 +79,22 @@
     - deploy
     - application
 
-- name: Create version file
-  template:
-    src: version.j2
-    dest: "/var/www/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
-  become: yes
-  become_user: "{{ deploy_user }}"
+- name: maintenance mode on
+  file:
+    state: touch
+    path: /var/www/maintenance_mode
+  when: maintenance
   tags:
     - deploy
-    - application
+    - maintenance_on
+
+- name: stop application
+  shell: service {{ application_name }}-{{ item.name }} stop
+  with_items: '{{ processes }}'
+  when: maintenance
+  tags:
+    - deploy
+    - maintenance_on
 
 - name: Prepare the application
   shell: 'bash -lc "{{ item }}"'
@@ -98,7 +104,7 @@
   become: yes
   become_user: "{{ deploy_user }}"
   with_items: '{{ prepare }}'
-  when: prepare is defined
+  when: prepare|length > 0
   tags:
     - deploy
     - application
@@ -115,3 +121,12 @@
   tags:
     - deploy
     - application
+
+- name: maintenance mode off
+  file:
+    state: absent
+    path: /var/www/maintenance_mode
+  when: maintenance
+  tags:
+    - deploy
+    - maintenance_off
