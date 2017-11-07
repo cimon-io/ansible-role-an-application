@@ -1,0 +1,19 @@
+---
+- name: "Attach environment to application"
+  template:
+    src: "dotenv.j2"
+    dest: "{{ application_prefix }}/{{ application_name }}/shared/.env"
+    owner: "{{ application_user }}"
+    group: "{{ application_group }}"
+    mode: 0644
+  become_user: "{{ application_user }}"
+
+- name: "export variables from .env file"
+  blockinfile:
+    path: "~{{ application_user }}/.profile"
+    marker: "# {mark} Ansible managed block"
+    block: |
+      if [ -f  "{{ application_prefix }}/{{ application_name }}/shared/.env" ]; then
+        export $(grep "^[^#]*=.*" "{{ application_prefix }}/{{ application_name }}/shared/.env" | xargs)
+      fi
+

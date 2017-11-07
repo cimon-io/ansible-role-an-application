@@ -1,5 +1,7 @@
+---
 - name: restart application
-  shell: service {{ application_name }}-{{ item.name }} restart
-  with_items: '{{ processes }}'
-
-# - ansible `service` module doesn't work without init script in `/etc/init.d/` directory (Ubuntu 14.x)
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items: "{{ application_services }}"
+  when: application_services

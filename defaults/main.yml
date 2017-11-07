@@ -1,17 +1,35 @@
 ---
-deploy_user: deploy
-deploy_group: deploy
+application_user: "deploy"
+application_group: "deploy"
 
-application_name: default
+application_release_version: ""
+application_keep_versions: 3
 
-project_repo: ''
-deploy_key_name: rsa_key
+application_prefix: "/var/www/"
+application_name: ""
 
-project_url: ''
-url_username: ''
-url_password: ''
+application_repository: ""
+application_deploy_key: ""
 
-shared: []
-prepare: []
+application_url: ""
+application_url_user: ""
+application_url_pass: ""
 
-maintenance: false
+application_shared: []
+# application_shared:
+#   - src: public
+#     dest: public
+#     dir: yes
+application_environment: []
+# application_environment:
+#   - ENV1=VALUE1
+#   - ENV2=VALUE2
+application_prepare: []
+# application_prepare:
+#   - "unzip archive.zip"
+#   - "rm archive.zip"
+
+application_services: []
+# application_services:
+#   - appname.service
+#   - "{{ systemd_service_name }}"
