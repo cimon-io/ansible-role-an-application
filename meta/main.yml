@@ -11,8 +11,13 @@ galaxy_info:
     - name: Ubuntu
       versions:
       - all
+    - name: Debian
+      versions:
+      - all
 
-  galaxy_tags: []
+  galaxy_tags:
+    - deploy
+    - apllication
 
 dependencies: []
 
