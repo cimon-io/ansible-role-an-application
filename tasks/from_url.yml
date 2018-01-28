@@ -11,5 +11,5 @@
   get_url:
     url: "{{ application_url }}"
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/"
-    headers: "{{ aoolication_url_headers | default(omit) }}"
+    headers: "{{ application_url_headers | default(omit) }}"
   become_user: "{{ application_user }}"
