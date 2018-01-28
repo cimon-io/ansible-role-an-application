@@ -48,12 +48,11 @@ application_deploy_key: ""       # An optional private key file for the reposito
 application_release_version: ""  # Version to check out
 ```
 
-If `application_url` is specified, the role creates application directory at `releases/timestamp` and downloads a project archive from `application_url` to it. If necessary, you can set HTTP authentication parameters such as a username and a password.
+If `application_url` is specified, the role creates application directory at `releases/timestamp` and downloads a project archive from `application_url` to it. If necessary, you can set HTTP headers for authentication.
 
 ```yaml
 application_url: ""
-application_url_user: ""  # The username for use in HTTP basic authentication
-application_url_pass: ""  # The password for use in HTTP basic authentication
+application_url_headers: ""  # Custom HTTP headers to a request in the format "key:value,key:value"
 ```
 
 A list of shared directories, which will be created, can be set by the `application_shared` variable.
