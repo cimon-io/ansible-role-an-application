@@ -12,8 +12,8 @@ application_repository: ""
 application_deploy_key: ""
 
 application_url: ""
-application_url_user: ""
-application_url_pass: ""
+application_url_headers: ""
+# application_url_headers: "PRIVATE_TOKEN:0123456789abcdef"
 
 application_shared: []
 # application_shared:
