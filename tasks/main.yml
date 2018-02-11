@@ -53,6 +53,7 @@
     state: link
     force: yes
   notify: restart application
+  when: item.dest is defined
   become_user: "{{ application_user }}"
   with_items: "{{ application_shared }}"
   tags: [application-deploy, application]
