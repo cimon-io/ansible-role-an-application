@@ -3,7 +3,7 @@ application_user: "deploy"
 application_group: "deploy"
 
 application_release_version: ""
-application_keep_versions: 3
+application_keep_versions: 7
 
 application_prefix: "/var/www/"
 application_name: ""
