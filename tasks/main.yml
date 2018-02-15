@@ -34,15 +34,15 @@
   with_items: "{{ application_shared }}"
   tags: [application-deploy, application]
 
-- include: environ.yml
+- import_tasks: environ.yml
   when: application_environment | length > 0
   tags: [application-deploy, application-env, application]
 
-- include: from_repo.yml
+- import_tasks: from_repo.yml
   when: application_repository | length > 0
   tags: [application-deploy, application]
 
-- include: from_url.yml
+- import_tasks: from_url.yml
   when: application_url | length > 0
   tags: [application-deploy, application]
 
