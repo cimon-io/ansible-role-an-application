@@ -7,6 +7,7 @@
     group: "{{ application_group }}"
     mode: 0644
   become_user: "{{ application_user }}"
+  notify: restart application
 
 - name: "export variables from .env file"
   blockinfile:
