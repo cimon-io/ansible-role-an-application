@@ -58,6 +58,15 @@
   with_items: "{{ application_shared }}"
   tags: [application-deploy, application]
 
+- name: "Create VERSION file"
+  template:
+    src: version.j2
+    dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
+    force: no
+  when: application_release_version | length > 0
+  become_user: "{{ application_user }}"
+  tags: [application-deploy, application]
+
 - name: "Prepare the application"
   shell: "/bin/bash -lc '{{ item }}'"
   args:
