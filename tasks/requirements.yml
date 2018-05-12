@@ -1,0 +1,14 @@
+---
+- name: "Install requirements"
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - git
+
+- name: "Install S3 requirements"
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - boto3
+    - botocore
+  when: application_s3_bucket | length > 0

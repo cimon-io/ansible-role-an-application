@@ -1,0 +1,14 @@
+---
+- name: "Download project"
+  aws_s3:
+    aws_access_key: "{{ application_aws_access_key }}"
+    aws_secret_key: "{{ application_aws_secret_key }}"
+    bucket: "{{ application_s3_bucket }}"
+    dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/{{ application_s3_object | basename }}"
+    mode: "get"
+    object: "{{ application_s3_object }}"
+    region: "{{ application_s3_region }}"
+    s3_url: "{{ application_s3_url | default(omit) }}"
+    rgw: "{{ application_s3_rgw }}"
+    version: "{{ application_s3_version | default(omit) }}"
+  become_user: "{{ application_user }}"

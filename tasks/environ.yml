@@ -9,12 +9,10 @@
   become_user: "{{ application_user }}"
   notify: restart application
 
-- name: "export variables from .env file"
-  blockinfile:
-    path: "~{{ application_user }}/.profile"
-    marker: "# {mark} Ansible managed block"
-    block: |
-      if [ -f  "{{ application_prefix }}/{{ application_name }}/shared/.env" ]; then
-        export $(grep "^[^#]*=.*" "{{ application_prefix }}/{{ application_name }}/shared/.env" | xargs)
-      fi
-
+- name: "Export envvars (bash)"
+  template:
+    src: "load_app_env.sh.j2"
+    dest: "/etc/profile.d/load_app_env.sh"
+    owner: "root"
+    group: "root"
+    mode: 0755
