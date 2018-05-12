@@ -1,4 +1,7 @@
 ---
+- import_tasks: requirements.yml
+  tags: [application, application-install]
+
 - name: "Get the current time for a timestamp"
   command: "date +%Y%m%d-%H%M%S"
   register: timestamp
@@ -38,12 +41,25 @@
   when: application_environment | length > 0
   tags: [application-deploy, application-env, application]
 
-- import_tasks: from_repo.yml
+- name: "Create application directory"
+  file:
+    path: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
+    state: directory
+    owner: "{{ application_user }}"
+    group: "{{ application_group }}"
+    mode: 0775
+  tags: [application-deploy, application]
+
+- import_tasks: storages/git.yml
   when: application_repository | length > 0
   tags: [application-deploy, application]
 
-- import_tasks: from_url.yml
+- import_tasks: storages/http.yml
   when: application_url | length > 0
+  tags: [application-deploy, application]
+
+- import_tasks: storages/s3.yml
+  when: application_s3_bucket | length > 0
   tags: [application-deploy, application]
 
 - name: "Link shared resources to the application"

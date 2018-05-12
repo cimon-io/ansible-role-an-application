@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  roles:
+    - role: ansible-role-an-application
+      application_name: "test"
+      application_environment:
+        - VAR1=test_var_1
+        - VAR2=test_var_2

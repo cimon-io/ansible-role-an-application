@@ -5,25 +5,38 @@ application_group: "deploy"
 application_release_version: ""
 application_keep_versions: 7
 
-application_prefix: "/var/www/"
+application_prefix: "/var/www"
 application_name: ""
 
+### Storages
+# git repository
 application_repository: ""
 application_deploy_key: ""
 
+# http
 application_url: ""
 application_url_headers: ""
 # application_url_headers: "PRIVATE_TOKEN:0123456789abcdef"
 
+# s3
+application_aws_access_key: None
+application_aws_secret_key: None
+application_s3_bucket: ""
+application_s3_object: ""
+application_s3_region: ""
+application_s3_url: ""
+application_s3_version: ""
+application_s3_rgw: False
+
 application_shared: []
 # application_shared:
-#   - src: public
-#     dest: public
-#     dir: yes
+#   - { src: public, dest: public, dir: yes }
+
 application_environment: []
 # application_environment:
 #   - ENV1=VALUE1
 #   - ENV2=VALUE2
+
 application_prepare: []
 # application_prepare:
 #   - "unzip archive.zip"
