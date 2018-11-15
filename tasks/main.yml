@@ -7,6 +7,15 @@
   register: timestamp
   tags: [application-deploy, application]
 
+- name: "Create main application directory"
+  file:
+    path: "{{ application_prefix }}/{{ application_name }}"
+    state: directory
+    owner: "{{ application_user }}"
+    group: "{{ application_group }}"
+    mode: 0775
+  tags: [application]
+
 - name: "Create application directories"
   file:
     path: "{{ application_prefix }}/{{ application_name }}/{{ item }}"
