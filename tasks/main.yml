@@ -14,6 +14,7 @@
     owner: "{{ application_user }}"
     group: "{{ application_group }}"
     mode: 0775
+  become: True
   tags: [application]
 
 - name: "Create application directories"
@@ -26,6 +27,7 @@
   with_items:
     - releases
     - shared
+  become: True
   tags: [application]
 
 - name: "Get list of previous releases"
@@ -33,6 +35,8 @@
   args:
     executable: /bin/bash
   register: release_dirs
+  become: True
+  become_user: "{{ application_user }}"
   tags: [application, application-deploy, application-cleanup]
 
 - name: "Create additional shared directories"
@@ -44,6 +48,7 @@
     mode: 0775
   when: item.dir is defined
   with_items: "{{ application_shared }}"
+  become: True
   tags: [application-deploy, application]
 
 - import_tasks: environ.yml
@@ -57,6 +62,7 @@
     owner: "{{ application_user }}"
     group: "{{ application_group }}"
     mode: 0775
+  become: True
   tags: [application-deploy, application]
 
 - import_tasks: storages/git.yml
@@ -79,6 +85,7 @@
     force: yes
   notify: restart application
   when: item.dest is defined
+  become: True
   become_user: "{{ application_user }}"
   with_items: "{{ application_shared }}"
   tags: [application-deploy, application]
@@ -89,6 +96,7 @@
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
     force: no
   when: application_release_version | length > 0
+  become: True
   become_user: "{{ application_user }}"
   tags: [application-deploy, application]
 
@@ -97,6 +105,7 @@
   args:
     chdir: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
   notify: restart application
+  become: True
   become_user: "{{ application_user }}"
   with_items: "{{ application_prepare }}"
   tags: [application-deploy, application]
@@ -108,6 +117,7 @@
     state: link
     force: yes
   notify: restart application
+  become: True
   become_user: "{{ application_user }}"
   tags: [application-deploy, application]
 
@@ -116,5 +126,7 @@
     name: "{{ application_prefix }}/{{ application_name }}/releases/{{ item }}"
     state: absent
   with_items: "{{ release_dirs.stdout_lines }}"
-  when: release_dirs.stdout != ""
+  when: release_dirs.stdout | length > 0
+  become: True
+  become_user: "{{ application_user }}"
   tags: [application-deploy, application, application-cleanup]

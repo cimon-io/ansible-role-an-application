@@ -4,4 +4,5 @@
     url: "{{ application_url }}"
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/"
     headers: "{{ application_url_headers | default(omit) }}"
+  become: True
   become_user: "{{ application_user }}"

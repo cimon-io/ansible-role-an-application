@@ -6,6 +6,7 @@
     owner: "{{ application_user }}"
     group: "{{ application_group }}"
     mode: 0600
+  become: True
 
 - name: "Clonning project repo"
   git:
@@ -13,6 +14,7 @@
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
     accept_hostkey: true
     depth: 1
-    key_file: "{{ application_prefix}}/{{ application_name }}/shared/.ssh_deploy_key"
+    key_file: "{{ application_prefix }}/{{ application_name }}/shared/.ssh_deploy_key"
     version: "{{ application_release_version }}"
+  become: True
   become_user: "{{ application_user }}"

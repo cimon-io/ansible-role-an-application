@@ -6,6 +6,7 @@
     owner: "{{ application_user }}"
     group: "{{ application_group }}"
     mode: 0644
+  become: True
   become_user: "{{ application_user }}"
   notify: restart application
 
@@ -16,3 +17,4 @@
     owner: "root"
     group: "root"
     mode: 0755
+  become: True
