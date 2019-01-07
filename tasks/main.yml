@@ -5,6 +5,7 @@
 - name: "Get the current time for a timestamp"
   command: "date +%Y%m%d-%H%M%S"
   register: timestamp
+  changed_when: false
   tags: [application-deploy, application]
 
 - name: "Create main application directory"
@@ -35,6 +36,7 @@
   args:
     executable: /bin/bash
   register: release_dirs
+  changed_when: false
   become: True
   become_user: "{{ application_user }}"
   tags: [application, application-deploy, application-cleanup]
