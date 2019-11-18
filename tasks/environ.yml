@@ -9,12 +9,3 @@
   become: True
   become_user: "{{ application_user }}"
   notify: restart application
-
-- name: "Export envvars (bash)"
-  template:
-    src: "load_app_env.sh.j2"
-    dest: "/etc/profile.d/load_app_env.sh"
-    owner: "root"
-    group: "root"
-    mode: 0755
-  become: True

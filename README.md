@@ -37,7 +37,7 @@ application_name: ""
 You can define how many last releases should be kept with the next variable:
 
 ```yaml
-application_keep_versions: 3   # Keep last 3 releases
+application_keep_versions: 7   # Keep last 7 releases
 ```
 
 If `application_repository` is defined, the `application_deploy_key` values is sent to a remote deploy user at `shared/.ssh_deploy_key`. Then the project repository is cloned from git `application_repository`. You can define what release version of the repository should be used with the appropriate variable. It can be a literal string HEAD (default), a branch name or a tag name.
@@ -73,15 +73,15 @@ application_shared:
 If `application_environment` variables are specified, the role attaches them to the application at `shared/.env` and export the values to `$HOME/.profile`.
 
 ```yaml
-application_environment: []
+application_environment: {}
 ```
 
 You can list required variables in the following format:
 
 ```yaml
 application_environment:
-  - ENV1=VALUE1
-  - ENV2=VALUE2
+  ENV1: VALUE1
+  ENV2: VALUE2
 ```
 
 Specify other commands which must be executed for the application deployment as a list of strings:
@@ -113,11 +113,11 @@ The given example creates `/var/www/any` folder with `releases`, `shared` folder
 ```yaml
     - role: an-application
       application_name: any
-      application_repository: git@gitlab.cssum.net:all/any.git
+      application_repository: git@github.com:all/any.git
       application_environment:
-        - ENV1=1
-        - ENV2=2
-        - RACK_ENV=production
+        ENV1: 1
+        ENV2: 2
+        RACK_ENV: production
       application_release_version: "master"
       application_shared:
         - src: .env

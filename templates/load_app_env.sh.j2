@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# {{ ansible_managed }}
-
-if [ "$(id -un)" = "{{ application_user }}" ]; then
-  if [ -f  "{{ application_prefix }}/{{ application_name }}/shared/.env" ]; then
-    export $(grep "^[^#]*=.*" "{{ application_prefix }}/{{ application_name }}/shared/.env" | xargs)
-  fi
-fi

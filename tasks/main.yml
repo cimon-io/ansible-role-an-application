@@ -103,9 +103,11 @@
   tags: [application-deploy, application]
 
 - name: "Prepare the application"
-  shell: "/bin/bash -lc '{{ item }}'"
+  shell: "{{ item }}"
   args:
     chdir: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
+    executable: /bin/bash
+  environment: "{{ application_environment }}"
   notify: restart application
   become: True
   become_user: "{{ application_user }}"

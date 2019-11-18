@@ -34,8 +34,8 @@ application_shared: []
 
 application_environment: []
 # application_environment:
-#   - ENV1=VALUE1
-#   - ENV2=VALUE2
+#   ENV1: VALUE1
+#   ENV2: VALUE2
 
 application_prepare: []
 # application_prepare:
