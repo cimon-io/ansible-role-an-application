@@ -106,6 +106,7 @@
   shell: "/bin/bash -lc '{{ item }}'"
   args:
     chdir: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
+  environment: "{{ application_environment }}"
   notify: restart application
   become: True
   become_user: "{{ application_user }}"

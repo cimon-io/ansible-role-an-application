@@ -3,6 +3,15 @@
   roles:
     - role: ansible-role-an-application
       application_name: "test"
-      application_environment:
-        - VAR1=test_var_1
-        - VAR2=test_var_2
+      application_prepare:
+        - 'env'
+      application_environment: "{{ appenv }}"
+      application_shared:
+        - { src: .env, dest: .env }
+  vars:
+    appenv: "{{ appenv1 | combine(appenv2) }}"
+    appenv1:
+      VAR1: test_var_1
+      VAR2: test_var_2
+    appenv2:
+      EXTRA_VAR_HERE: "test_var with spaces!!!"
