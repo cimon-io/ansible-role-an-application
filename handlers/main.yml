@@ -1,7 +1,0 @@
----
-- name: restart application
-  systemd:
-    name: "{{ item }}"
-    state: restarted
-  with_items: "{{ application_services }}"
-  when: application_services | length > 0

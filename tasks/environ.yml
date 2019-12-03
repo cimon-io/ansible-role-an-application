@@ -8,4 +8,4 @@
     mode: 0644
   become: True
   become_user: "{{ application_user }}"
-  notify: restart application
+  register: _app_env_updated

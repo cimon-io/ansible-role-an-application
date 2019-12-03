@@ -85,7 +85,6 @@
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/{{ item.dest }}"
     state: link
     force: yes
-  notify: restart application
   when: item.dest is defined
   become: True
   become_user: "{{ application_user }}"
@@ -107,7 +106,6 @@
   args:
     chdir: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}"
   environment: "{{ application_environment }}"
-  notify: restart application
   become: True
   become_user: "{{ application_user }}"
   with_items: "{{ application_prepare }}"
@@ -119,7 +117,7 @@
     dest: "{{ application_prefix }}/{{ application_name }}/current"
     state: link
     force: yes
-  notify: restart application
+  register: _app_updated
   become: True
   become_user: "{{ application_user }}"
   tags: [application-deploy, application]
@@ -133,3 +131,12 @@
   become: True
   become_user: "{{ application_user }}"
   tags: [application-deploy, application, application-cleanup]
+
+- name: "Restart application"
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+  with_items: "{{ application_services }}"
+  when:
+    - application_services | length > 0
+    - _app_updated is changed or _app_env_updated is changed
