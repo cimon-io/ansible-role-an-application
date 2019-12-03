@@ -32,14 +32,11 @@
   tags: [application]
 
 - name: "Get list of previous releases"
-  shell: "ls -t {{ application_prefix }}/{{ application_name }}/releases | tail -n +{{ application_keep_versions }}"
-  args:
-    executable: /bin/bash
-  register: release_dirs
-  changed_when: false
-  become: True
-  become_user: "{{ application_user }}"
-  tags: [application, application-deploy, application-cleanup]
+  find:
+    paths: "{{ application_prefix }}/{{ application_name }}/releases"
+    file_type: "directory"
+  register: _release_dirs
+  tags: [application-deploy, application, application-cleanup]
 
 - name: "Create additional shared directories"
   file:
@@ -122,12 +119,16 @@
   become_user: "{{ application_user }}"
   tags: [application-deploy, application]
 
+- name: "Create list with old releases"
+  set_fact:
+    _release_paths: "{{ _release_dirs.files | sort(attribute='ctime') | map(attribute='path') | reverse | list }}"
+  tags: [application-deploy, application, application-cleanup]
+
 - name: "Cleanup"
   file:
-    name: "{{ application_prefix }}/{{ application_name }}/releases/{{ item }}"
+    name: "{{ item }}"
     state: absent
-  with_items: "{{ release_dirs.stdout_lines }}"
-  when: release_dirs.stdout | length > 0
+  with_items: "{{ _release_paths[application_keep_versions:] }}"
   become: True
   become_user: "{{ application_user }}"
   tags: [application-deploy, application, application-cleanup]
@@ -140,3 +141,4 @@
   when:
     - application_services | length > 0
     - _app_updated is changed or _app_env_updated is changed
+  tags: [application-deploy, application]
