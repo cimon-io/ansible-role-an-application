@@ -28,6 +28,9 @@ application_s3_url: ""
 application_s3_version: ""
 application_s3_rgw: False
 
+# local archive
+application_archive: ""
+
 application_shared: []
 # application_shared:
 #   - { src: public, dest: public, dir: yes }

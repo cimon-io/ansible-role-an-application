@@ -76,6 +76,10 @@
   when: application_s3_bucket | length > 0
   tags: [application-deploy, application]
 
+- import_tasks: storages/local.yml
+  when: application_archive | length > 0
+  tags: [application-deploy, application]
+
 - name: "Link shared resources to the application"
   file:
     src: "{{ application_prefix }}/{{ application_name }}/shared/{{ item.src }}"

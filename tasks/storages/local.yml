@@ -1,0 +1,7 @@
+---
+- name: "Upload archive from localhost"
+  copy:
+    src: "{{ application_archive }}"
+    dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/"
+  become: True
+  become_user: "{{ application_user }}"
