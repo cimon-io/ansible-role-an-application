@@ -94,12 +94,14 @@
 
 - name: "Create VERSION file"
   template:
-    src: version.j2
+    src: "version.j2"
     dest: "{{ application_prefix }}/{{ application_name }}/releases/{{ timestamp.stdout }}/VERSION"
     force: no
+    owner: "{{ application_user }}"
+    group: "{{ application_group }}"
+    mode: 0644
   when: application_release_version | length > 0
   become: True
-  become_user: "{{ application_user }}"
   tags: [application-deploy, application]
 
 - name: "Prepare the application"
