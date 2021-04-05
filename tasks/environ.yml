@@ -7,5 +7,4 @@
     group: "{{ application_group }}"
     mode: 0644
   become: True
-  become_user: "{{ application_user }}"
   register: _app_env_updated
